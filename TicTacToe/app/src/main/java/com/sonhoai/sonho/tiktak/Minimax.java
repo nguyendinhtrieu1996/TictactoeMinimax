@@ -7,19 +7,25 @@ package com.sonhoai.sonho.tiktak;
 public class Minimax {
 
 
-    public Record minimaxRecode(ChessBoard chessBoard, int player,int currentDept, int maxDept) {
+    public Record minimaxRecode(ChessBoard chessBoard,int currentDept, int maxDept) {
         Move bestMove=null;//
         int bestScore;//giá trị điểm tốt nhất
 
         if(chessBoard.isGameOver() || currentDept == maxDept) {
-            return new Record(null, chessBoard.evaluate(player));
+            int score = chessBoard.evaluate();
+            if (score > 0) {
+                score -= currentDept;
+            } else if (score < 0) {
+                score += currentDept;
+            } else {
+                score = currentDept;
+            }
+            return new Record(null, score);
         }
 
-        if(chessBoard.getPlayer()==player){
-            bestScore=Integer.MIN_VALUE;
-        }else {
-            bestScore=Integer.MAX_VALUE;
-        }
+
+        bestScore=Integer.MIN_VALUE;
+
 
         for(Move move:chessBoard.getMove()){
             ChessBoard newChess = new ChessBoard(chessBoard.getContext(),chessBoard.getBitmapWidth(), chessBoard.getBitmapHeight(),chessBoard.getColQty(),chessBoard.getRowQty());
@@ -27,20 +33,15 @@ public class Minimax {
             newChess.setPlayer(chessBoard.getPlayer());
 
             newChess.makeMove(move);
-            Record record = minimaxRecode(newChess, player, currentDept+1, maxDept);
+            Record record = minimaxRecode(newChess, currentDept+1, maxDept);
 
-            //Bot
-             if(chessBoard.getPlayer() == player){
-                if(record.getScore() > bestScore) {
-                    bestScore = record.getScore();
-                    bestMove = move;
-                }
-            } else {
-                if(record.getScore() < bestScore){
-                    bestScore = record.getScore();
-                    bestMove = move;
-                }
+            int currentScore = -record.getScore();
+
+            if(currentScore > bestScore) {
+                bestScore = currentScore;
+                bestMove = move;
             }
+
         }
 
         return new Record(bestMove,bestScore);

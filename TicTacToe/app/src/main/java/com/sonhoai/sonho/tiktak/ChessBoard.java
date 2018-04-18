@@ -113,7 +113,6 @@ public class ChessBoard {
                 public void run() {
                     Record record = minimax.minimaxRecode(
                             ChessBoard.this,
-                            1,
                             currentDetp,
                             rowQty * colQty
                     );
@@ -217,11 +216,11 @@ public class ChessBoard {
     }
 
     //dánh giá bàn cở, trở về điểm tương ứng v player, boss thắng là 1, boss thua là -1, hòa là 0
-    public int  evaluate(int player) {
+    public int  evaluate() {
         if (checkWin(player))
-            return 1;
+            return 100;
         if (checkWin((player + 1) % 2))
-            return -1;
+            return -100;
         return 0;
     }
 
